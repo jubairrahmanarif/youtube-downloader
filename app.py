@@ -1,3 +1,4 @@
+```python
 from fastapi import FastAPI, Header, HTTPException
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
@@ -8,6 +9,7 @@ import uuid
 app = FastAPI()
 
 DOWNLOAD_KEY = os.getenv("DOWNLOAD_KEY", "")
+
 
 class DownloadRequest(BaseModel):
     url: str
@@ -30,27 +32,30 @@ def download_video(
     output = f"/tmp/{file_id}.%(ext)s"
 
     options = {
-    "format": "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best",
-    "merge_output_format": "mp4",
-    "outtmpl": output,
-    "noplaylist": True,
+        "format": "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best",
+        "merge_output_format": "mp4",
+        "outtmpl": output,
+        "noplaylist": True,
 
-    "js_runtimes": {
-        "deno": {}
-    },
+        # Use Deno for yt-dlp JavaScript challenges
+        "js_runtimes": {
+            "deno": {}
+        },
 
-    "http_headers": {
-        "User-Agent": (
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-            "AppleWebKit/537.36 (KHTML, like Gecko) "
-            "Chrome/139.0.0.0 Safari/537.36"
-        ),
-        "Accept-Language": "en-US,en;q=0.9",
-    },
+        # Browser-like headers
+        "http_headers": {
+            "User-Agent": (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) "
+                "Chrome/139.0.0.0 Safari/537.36"
+            ),
+            "Accept-Language": "en-US,en;q=0.9",
+        },
 
-    "quiet": False,
-    "no_warnings": False,
-}
+        # Keep logs visible while debugging
+        "quiet": False,
+        "no_warnings": False,
+    }
 
     try:
         with yt_dlp.YoutubeDL(options) as ydl:
@@ -70,8 +75,12 @@ def download_video(
             filename=f"{file_id}.mp4"
         )
 
+    except HTTPException:
+        raise
+
     except Exception as e:
         raise HTTPException(
             status_code=500,
             detail=str(e)
         )
+```
