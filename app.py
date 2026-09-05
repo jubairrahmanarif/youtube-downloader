@@ -30,13 +30,19 @@ def download_video(
     output = f"/tmp/{file_id}.%(ext)s"
 
     options = {
-        "format": "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best",
-        "merge_output_format": "mp4",
-        "outtmpl": output,
-        "noplaylist": True,
-        "quiet": True,
-        "no_warnings": True,
-    }
+    "format": "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best",
+    "merge_output_format": "mp4",
+    "outtmpl": output,
+    "noplaylist": True,
+
+    # Use Deno for YouTube JavaScript challenges
+    "js_runtimes": {
+        "deno": {}
+    },
+
+    "quiet": False,
+    "no_warnings": False,
+}
 
     try:
         with yt_dlp.YoutubeDL(options) as ydl:
