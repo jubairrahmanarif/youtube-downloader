@@ -1,4 +1,3 @@
-```python
 from fastapi import FastAPI, Header, HTTPException
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
@@ -83,4 +82,3 @@ def download_video(
             status_code=500,
             detail=str(e)
         )
-```
