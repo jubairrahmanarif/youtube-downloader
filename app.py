@@ -36,12 +36,14 @@ def download_video(
         "outtmpl": output,
         "noplaylist": True,
 
-        # Use Deno for yt-dlp JavaScript challenges
         "js_runtimes": {
             "deno": {}
         },
 
-        # Browser-like headers
+        "remote_components": {
+            "ejs": "npm"
+        },
+
         "http_headers": {
             "User-Agent": (
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -51,7 +53,6 @@ def download_video(
             "Accept-Language": "en-US,en;q=0.9",
         },
 
-        # Keep logs visible while debugging
         "quiet": False,
         "no_warnings": False,
     }
